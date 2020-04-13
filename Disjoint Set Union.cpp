@@ -5,16 +5,21 @@ const int mx = 1e5 + 5 ;
 
 int parent[mx] , siz[mx] , a[mx] ;
 
-int find_set(int v)
-{
-    if(v==parent[v]) return v ;
-    return parent[v] = find_set(parent[v]) ;
-}
-
 void make_set(int v)
 {
     parent[v] = v ;
     siz[v] = 1 ;
+}
+
+void init(int n)
+{
+    for(int i = 1 ; i <= n ; ++i) make_set(i) ;
+}
+
+int find_set(int v)
+{
+    if(v==parent[v]) return v ;
+    return parent[v] = find_set(parent[v]) ;
 }
 
 void union_set(int a , int b)

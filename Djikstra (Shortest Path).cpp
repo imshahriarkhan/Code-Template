@@ -1,37 +1,42 @@
 #include<bits/stdc++.h>
 using namespace std ;
 
-#define siz 100000 ;
-
-vector<pair < int , int > > v[siz] ;
-
-int dist[siz] , vis[siz] ;
-
-void djikstra()
+struct shortest_path
 {
-    dist[1] = 0 ;
-    multiset<pair< int , int> > q ;
-    s.insert({0,1}) ;
-    while(!s.empty())
+    const int INF = 1e9 ;
+    vector<vector<pair<int,int> > > adj ;
+
+    void init(int mx)
     {
-        pair<int,int> p = *s.begin() ;
-        s.erase(s.begin()) ;
-        int x = p.s , wei = p.f ;
-        if(vis[x]) continue ;
-        vis[x] = 1 ;
-        for(int i = 0 ; i < v[x].size() ; ++i)
+        adj = vector<vector<pair<int,int> > > (mx+1) ;
+    }
+
+    void djikstra(int s , vector<int> &d , vector<int> &p)
+    {
+        int n = adj.size() ;
+        d.assign(n,INF) ;
+        p.assign(n,-1) ;
+        d[s] = 0 ;
+        using pii = pair<int,int> ;
+        priority_queue<pii,vector<pii>, greater<pii> > q ;
+        q.push({0,s}) ;
+        while(!q.empty())
         {
-            int e = v[x][i].f , w = v[x][i].s ;
-            if((dist[x] + w)<dist[e])
+            int v = q.top().second ;
+            int d_v = q.top().first ;
+            q.pop() ;
+            if(d_v != d[v]) continue ;
+            for(auto edge : adj[v])
             {
-                dist[e] = dist[x] + w ;
-                s.insert({dist[e],e}) ;
+                int to = edge.first , len = edge.second ;
+
+                if((d[v] + len) < d[to])
+                {
+                    d[to] = d[v] + len ;
+                    p[to] = v ;
+                    q.push({d[to],to}) ;
+                }
             }
         }
     }
-}
-
-int main()
-{
-
-}
+} ;

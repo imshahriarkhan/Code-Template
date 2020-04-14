@@ -24,7 +24,7 @@ struct lazy_tree
 		    build(a,mid+1,high,right) ;
 		    t[node] = t[left] + t[right] ;
 		}
-    }
+   	 }
 
 	void upd(int node, int l, int r, ll v)
 	{
@@ -44,7 +44,7 @@ struct lazy_tree
 	{
 		if(r < i || l > j) return ;
 		if(i <= l && r <= j)
-        {
+       		{
 			upd(node, l, r, v) ;
 			return;
 		}

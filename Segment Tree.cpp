@@ -1,43 +1,51 @@
 #include<bits/stdc++.h>
 using namespace std ;
 
-const int mx = 1e5 + 1 ;
+#define ll long long
 
-int n , tree[4*mx] ;
-
-void build(int a[] , int low , int high , int node)
+struct tree
 {
-    if(low==high) tree[node] = a[low] ;
-    else
+    vector<ll> t ;
+
+    void init(int a[] , int low , int n)
     {
-        int mid = (low+high)>>1 , left = node<<1 , right = left|1 ;
-        build(a,low,mid,left) ;
-        build(a,mid+1,high,right) ;
-        tree[node] = tree[left] + tree[right] ;
+        t = vector<ll> (4*n + 4 , 0) ;
+        build(a,1,low,n) ;
     }
-}
 
-void update(int low , int high , int node , int ind , int val)
-{
-    if(low==high) tree[node] = val ;
-    else
+    void build(int a[] , int node , int low , int high)
     {
-        int mid = (low+high)>>1 , left = node<<1 , right = left|1 ;
-        if(ind<=mid) update(low,mid,left,ind,val) ;
-        else update(mid+1,high,right,ind,val) ;
-        tree[node] = tree[left] + tree[right] ;
+        if(low==high) t[node] = a[low] ;
+        else
+        {
+            int mid = (low+high)>>1 , left = node<<1 , right = left|1 ;
+            build(a,left,low,mid) ;
+            build(a,right,mid+1,high) ;
+            t[node] = t[left] + t[right] ;
+        }
     }
-}
 
-int sum(int low , int high , int node , int l , int r)
-{
-    if(l>r) return 0 ;
-    if(l==low && r==high) return tree[node] ;
-    int mid = (low+high)>>1 , left = node<<1 , right = left|1 ;
-    return sum(low,mid,left,l,r) + sum(mid+1,high,right,l,r) ;
-}
+    void update(int node , int low , int high , int ind , ll val)
+    {
+        if(high<ind ||low>ind) return ;
 
-int main()
-{
+        if(low==high && high==ind)
+        {
+            t[node] = val ;
+            return ;
+        }
 
-}
+        int mid = (low+high)>>1 , left = node<<1 , right = left|1 ;
+        update(left,low,mid,ind,val) ;
+        update(right,mid+1,high,ind,val) ;
+        t[node] = t[left] + t[right] ;
+    }
+
+    ll sum(int node , int low , int high , int l , int r)
+    {
+        if(l>r) return 0 ;
+        if(l<=low && high<=r) return t[node] ;
+        int mid = (low+high)>>1 , left = node<<1 , right = left|1 ;
+        return sum(left,low,mid,l,r) + sum(right,mid+1,high,l,r) ;
+    }
+} ;

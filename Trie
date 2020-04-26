@@ -1,6 +1,8 @@
 #include<bits/stdc++.h>
 using namespace std ;
 
+//for finding a string just maintain an end array
+
 const int maxN = 5e5 + 5 ;
 
 int next[maxN][27] , sz ;

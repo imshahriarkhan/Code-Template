@@ -1,0 +1,33 @@
+#include<bits/stdc++.h>
+using namespace std ;
+
+const int siz = 1e5 + 5 ;
+
+int vis[siz] ;
+
+set<int> adj[siz] ;
+
+vector<int> tour ;
+
+void dfs(int node)
+{
+    vis[node] = 1 ;
+    while(!adj.empty())
+    {
+        int to = *adj[node].begin() ;
+        adj[node].erase(to) ;
+        adj[to].erase(node) ;
+        dfs(to) ;
+    }
+    tour.push_back(node) ;
+}
+
+int main()
+{
+    int n , m ;
+    scanf("%d%d",&n,&m) ;
+    for(int i = 1 ; i <= n ; ++i)
+    {
+        if(!vis[i]) dfs(i) ;
+    }
+}

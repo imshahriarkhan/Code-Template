@@ -1,0 +1,28 @@
+#include<bits/stdc++.h>
+using namespace std ;
+
+const int n = 1e5 , m = 2e5 ;
+
+struct Edge{
+   int to , prevEdge ;
+} edgeList[m+1] ;
+
+int lastEdge[m+1] , vis[n+1] , numEdges ;
+
+void addEdge(int u , int v)
+{
+    edgeList[numEdges].to = v ;
+    edgeList[numEdges].prevEdge = lastEdge[u] ;
+    lastEdge[u] = numEdges ;
+    ++numEdges ;
+}
+
+void dfs(int u)
+{
+    vis[u] = 1 ;
+    for(int e = lastEdge[u] ; e != -1 ; e = edgeList[e].prevEdge)
+    {
+        int v = edgeList[e].to ;
+        if(!vis[v]) dfs(v) ;
+    }
+}

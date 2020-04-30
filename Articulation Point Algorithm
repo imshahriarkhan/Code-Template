@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+using namespace std ;
+
+const int mx = 1e5 + 5 ;
+
+int n , timer ;
+vector<bool> vis ;
+vector<int> adj[mx] , tin , low , cutpoint ;
+
+void dfs(int v , int p = -1)
+{
+    vis[v] = false ;
+    tin[v] = low[v] = ++timer ;
+    int children = 0 ;
+    for(int to : adj[v])
+    {
+        if(to==p) continue ;
+        if(vis[to])
+        {
+            low[v] = min(low[v],tin[to]) ;
+        }
+        else
+        {
+            dfs(to,v) ;
+            low[v] = min(low[v],low[to]) ;
+            if(low[to]>=tin[v] && p!=-1) cutpoint[v] = 1 ;
+            ++children ;
+        }
+    }
+    if(p == -1 && children > 1) cutpoint[v] = 1 ;
+}
+
+void find_cutpoints()
+{
+    timer = 0 ;
+    vis.assign(n + 1,false) ;
+    tin.assign(n + 1,-1) ;
+    low.assign(n + 1,-1) ;
+    cutpoint.assign(n + 1 , 0) ;
+    for(int i = 1 ; i <= n ; ++i)
+    {
+        if(!vis[i]) dfs(i) ;
+    }
+}

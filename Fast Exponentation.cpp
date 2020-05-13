@@ -1,14 +1,14 @@
 #include<bits/stdc++.h>
 using namespace std ;
 
-int fast_exponentiation(int a , int n)
+long long int power(long long int a , long long int n)
 {
     long long res = 1 ;
     while(n)
     {
         if(n&1) res = (res*a)%mod ;
         a = (long long)(a * a) % mod ;
-        n >> 1 ;
+        n = n >> 1 ;
     }
     return res ;
 }

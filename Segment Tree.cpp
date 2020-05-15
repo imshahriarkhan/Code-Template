@@ -44,6 +44,7 @@ struct tree
     ll sum(int node , int low , int high , int l , int r)
     {
         if(l>r) return 0 ;
+        if(l>high || r<low) return 0 ;
         if(l<=low && high<=r) return t[node] ;
         int mid = (low+high)>>1 , left = node<<1 , right = left|1 ;
         return sum(left,low,mid,l,r) + sum(right,mid+1,high,l,r) ;

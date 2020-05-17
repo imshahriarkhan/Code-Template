@@ -20,8 +20,8 @@ struct lazy_tree
 		else
 		{
 		    int mid = (low+high)>>1 , left = node<<1 , right = left|1 ;
-		    build(a,low,mid,left) ;
-		    build(a,mid+1,high,right) ;
+		    build(a,left,low,mid) ;
+		    build(a,right,mid+1,high) ;
 		    t[node] = t[left] + t[right] ;
 		}
    	 }

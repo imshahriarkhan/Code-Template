@@ -5,7 +5,7 @@ using namespace std ;
 
 const int maxN = 5e5 + 5 ;
 
-int next[maxN][27] , sz ;
+int nex[maxN][27] , sz ;
 
 void insert_string(string &s)
 {
@@ -13,8 +13,8 @@ void insert_string(string &s)
     for(int i = 0 ; i < siz ; ++i)
     {
         int c = s[i]-'a' ;
-        if(!next[v][c]) next[v][c] = ++sz ;
-        v = next[v][c] ;
+        if(!nex[v][c]) nex[v][c] = ++sz ;
+        v = nex[v][c] ;
     }
 }
 
@@ -24,8 +24,8 @@ bool search_prefix(string &tmp)
     for(int i = 0 ; i < siz ; ++i)
     {
         int c = tmp[i]-'a' ;
-        if(!next[v][c]) return false ;
-        v = next[v][c] ;
+        if(!nex[v][c]) return false ;
+        v = nex[v][c] ;
     }
     return true ;
 }

@@ -1,0 +1,22 @@
+#include<bits/stdc++.h>
+using namespace std ;
+
+int fin(int p)
+{
+    if(p>0) return 1 ;
+    else return 0 ;
+}
+
+int ternary_search(int mxval)
+{
+    int l = 0 , r = mxval , ans = 10000000 ;
+    while((r-l)>2)
+    {
+        int m1 = l + (r-l)/3 , m2 = r - (r-l)/3 ;
+
+        if(fin(m1)<fin(m2)) r = m2 ;
+        else l = m1 ;
+    }
+    for(; l <= r ; ++l) ans = min(ans,fin(l)) ;
+    return ans ;
+}

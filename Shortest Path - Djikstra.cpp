@@ -1,3 +1,4 @@
+
 #include<bits/stdc++.h>
 using namespace std ;
 
@@ -6,14 +7,14 @@ struct shortest_path
     const int INF = 1e9 ;
     vector<vector<pair<int,int> > > adj ;
 
-    void init(int mx)
+    shortest_path(int n , int start , vector<vector<pair<int,int> > > &arr , vector<int> &d , vector<int> &p)
     {
-        adj = vector<vector<pair<int,int> > > (mx+1) ;
+        adj = arr ;
+        djikstra(n,start,d,p) ;
     }
 
-    void djikstra(int s , vector<int> &d , vector<int> &p)
+    void djikstra(int n , int s , vector<int> &d , vector<int> &p)
     {
-        int n = adj.size() ;
         d.assign(n,INF) ;
         p.assign(n,-1) ;
         d[s] = 0 ;

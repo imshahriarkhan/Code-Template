@@ -1,4 +1,3 @@
-
 #include<bits/stdc++.h>
 using namespace std ;
 
@@ -17,6 +16,7 @@ struct shortest_path
     {
         d.assign(n,INF) ;
         p.assign(n,-1) ;
+        vector<int> vis(n+5,0) ;
         d[s] = 0 ;
         using pii = pair<int,int> ;
         priority_queue<pii,vector<pii>, greater<pii> > q ;
@@ -26,7 +26,8 @@ struct shortest_path
             int v = q.top().second ;
             int d_v = q.top().first ;
             q.pop() ;
-            if(d_v != d[v]) continue ;
+            if(vis[v]) continue ;
+            vis[v] = 1 ;
             for(auto edge : adj[v])
             {
                 int to = edge.first , len = edge.second ;

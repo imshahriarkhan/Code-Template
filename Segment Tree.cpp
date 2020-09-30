@@ -1,3 +1,4 @@
+
 #include<bits/stdc++.h>
 using namespace std ;
 
@@ -7,7 +8,7 @@ struct tree
 {
     vector<ll> t ;
 
-    void init(int a[] , int low , int n)
+    tree(int a[] , int low , int n)
     {
         t = vector<ll> (4*n + 4 , 0) ;
         build(a,1,low,n) ;

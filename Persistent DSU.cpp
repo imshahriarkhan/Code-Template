@@ -1,3 +1,9 @@
+//This is a template for dynamic connectivity problem
+//It is also called persistent dsu or reachability tree
+//It can add edges, remove edges and count the number of connected components in a tree
+//It processes offline queries in O(log^2(n))
+//Code Source: https://cp-algorithms.com/data_structures/deleting_in_log_n.html
+
 #include<bits/stdc++.h>
 using namespace std ;
 

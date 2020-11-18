@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+using namespace std ;
+
+const int mx = 1e4 + 5 ;
+
+const double eps = 0.00000001 ;
+
+double a[mx] ;
+
+int n , k ;
+
+int check(double v)
+{
+    double tot = 0 , b[n+1] ;
+    for(int i = 0 ; i < n ; ++i)
+    {
+        b[i] = a[i] ;
+        if((v-b[i])<eps)
+        {
+            tot += (a[i]-v) ;
+            b[i] = v ;
+        }
+    }
+    for(int i = 0 ; i < n ; ++i)
+    {
+        if((b[i]-v)<eps)
+        {
+            tot -= ((100.00*(v-b[i]))/(100.00-k)) ;
+        }
+    }
+    if(tot<eps) return 0 ;
+    return 1 ;
+}
+
+int main()
+{
+    cin>>n>>k ;
+    for(int i = 0 ; i < n ; ++i) cin>>a[i] ;
+    int st = 0 , ed = 1001 ;
+    double ans ;
+    while(st<ed)
+    {
+        int mid = (st+ed+1)/2 ;
+        if(check(mid)) st = mid ;
+        else ed = mid - 1 ;
+    }
+    double increment = 0.1 ;
+    ans = st ;
+    for(int i = 0 ; i < 9 ; ++i)
+    {
+        while(check(ans))
+        {
+            ans += increment ;
+        }
+        ans -= increment ;
+        increment/=10 ;
+    }
+    cout<<setprecision(9)<<fixed<<ans<<endl ;
+    return 0 ;
+}

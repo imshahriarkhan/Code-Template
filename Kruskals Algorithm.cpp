@@ -1,67 +1,57 @@
 #include<bits/stdc++.h>
 using namespace std ;
 
-const int MAX = 1e4 + 5 ;
+const int mx = 2e5 + 5 ;
 
-int id[MAX] , nodes , edges ;
+int root[mx] , siz[mx] , n , m ;
 
-pair<long long int , pair<int,int> > p[MAX] ;
+long long ans ;
 
-void initialize()
-{
-    for(int i = 0 ; i < MAX ; ++i)
-    {
-        id[i] = i ;
-    }
-}
-
-int root(int x)
-{
-    while(id[x]!=x)
-    {
-        id[x] = id[id[x]] ;
-        x = id[x] ;
-    }
-    return x ;
-}
-
-void union1(int x , int y)
-{
-    int p = root(x) , q = root(y) ;
-    id[p] = id[q] ;
-}
-
-long long kruskal(pair<long long , pair<int , int> > p[])
+struct triplet
 {
     int x , y ;
-    long long cost , mincost = 0 ;
-    for(int i = 0 ; i < edges ; ++i)
-    {
-        x = p[i].second.first ;
-        y = p[i].second.second ;
-        cost = p[i].first ;
-        if(root(x)!=root(y))
-        {
-            mincost += cost ;
-            union1(x,y) ;
-        }
-    }
-    return mincost ;
+    long long w ;
+};
+
+bool comp(triplet &a , triplet &b)
+{
+    return a.w<b.w ;
+}
+
+vector<triplet> edges ;
+
+int find_root(int p)
+{
+    if(root[p]==p) return p ;
+    return root[p] = find_root(root[p]) ;
+}
+
+void add(int x , int y)
+{
+    int root_x = find_root(x) , root_y = find_root(y) ;
+    if(siz[root_x]<siz[root_y]) swap(root_x,root_y) ;
+    root[root_y] = root_x ;
+    siz[root_x] += siz[root_y] ;
 }
 
 int main()
 {
-    int x , y ;
-    long long weight , cost , mincost ;
-    initialize() ;
-    cin>>nodes>>edges ;
-    for(int i = 0 ; i < edges ; ++i)
+    scanf("%d%d",&n,&m) ;
+    for(int i = 1 ; i <= n ; ++i) root[i] = i , siz[i] = 1 ;
+    for(int i = 1 ; i <= m ; ++i)
     {
-        cin>>x>>y ;
-        p[i] = make_pair(weight,make_pair(x,y)) ;
+        int x , y , w ;
+        scanf("%d%d%d",&x,&y,&w) ;
+        edges.push_back({x,y,w}) ;
     }
-    sort(p,p+edges) ;
-    mincost = kruskal(p) ;
-    cout<<mincost<<endl ;
+    sort(edges.begin(),edges.end(),comp) ;
+    for(int i = 0 ; i < m ; ++i)
+    {
+        triplet edge = edges[i] ;
+        if(find_root(edge.x)==find_root(edge.y)) continue ;
+        add(edge.x,edge.y) ;
+        ans += edge.w ;
+    }
+    printf("%lld\n",ans) ;
     return 0 ;
 }

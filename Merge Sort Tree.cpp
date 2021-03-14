@@ -5,14 +5,15 @@ using namespace std ;
 
 int lower_bs(vector<int> &a , int x)
 {
-    int l = 0 , h = a.size() ;
+    int l = 0 , h = a.size() - 1 ;
     while(l<h)
     {
-        int mid = (l+h)>>1 ;
-        if(x<=a[mid]) h = mid ;
-        else l = mid + 1 ;
+        int mid = (l+h+1)>>1 ;
+        if(x<a[mid]) h = mid - 1 ;
+        else l = mid ;
     }
-    return l ;
+    if(a[l]<=x) return l + 1 ;
+    else return 0 ;
 }
 
 struct merge_sort_tree
@@ -21,7 +22,7 @@ struct merge_sort_tree
 
     void init(int n)
     {
-        t = new vector<int> [n] ;
+        t = new vector<int> [4*n] ;
     }
 
     void build(int a[] , int node , int l , int r)
@@ -40,8 +41,7 @@ struct merge_sort_tree
     {
         if(i>r || j<l) return 0 ;
         if(i<=l && j>=r) return lower_bs(t[node],k) ;
-
         int mid = (l+r)>>1 , left = node<<1 , right = left|1 ;
         return query(left,l,mid,i,j,k) + query(right,mid+1,r,i,j,k) ;
     }
-} ;
+} T ;

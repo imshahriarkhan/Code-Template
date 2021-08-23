@@ -1,0 +1,20 @@
+#include<bits/stdc++.h>
+using namespace std ;
+
+//Thanks to https://codeforces.com/profile/jiangly
+
+const int mx = 1e5 + 5 ;
+
+int main()
+{
+    int mu[mx] = {0} ;
+    mu[1] = 1 ;
+    for(int i = 1 ; i < mx ; ++i)
+    {
+        for(int j = 2*i ; j < mx ; j += i)
+        {
+            mu[j] -= mu[i] ;
+        }
+    }
+    return 0 ;
+}

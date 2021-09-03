@@ -5,9 +5,6 @@ using namespace std ;
 //To quickly jump between two different versions of the Segment Tree, we need to store this roots in an array.
 //To use a specific version of the Segment Tree we simply call the query using the appropriate root vertex.
 
-#include<bits/stdc++.h>
-using namespace std ;
-
 const int MX = 1e5 + 5 ;
 
 struct Node

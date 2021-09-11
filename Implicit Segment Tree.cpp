@@ -1,65 +1,73 @@
-/*************************************************************************************
-    Implicit segment tree with addition on the interval
-    and getting the value of some element.
-    Works on the intervals like [1..10^9].
-    O(logN) on query, O(NlogN) of memory.
-    Author: Bekzhan Kassenov.
-    Based on problem 3327 from informatics.mccme.ru
-    http://informatics.mccme.ru/moodle/mod/statements/view.php?chapterid=3327
-*************************************************************************************/
-
 #include<bits/stdc++.h>
 using namespace std ;
 
-typedef long long ll
+//implcit segment tree with lazy propagation
+
+const int MX = 15000005 ;
+
+int ptr = 1 ;
 
 struct Node{
-    ll sum ;
-    Node *l , *r ;
-    Node() : sum(0) , l(NULL) , r(NULL) {}
-};
+    short int lazy ;
+    int sum , left , right ;
+    Node() {lazy = -1 , sum = left = right = 0 ;}
+} T[MX] ;
 
-void add(Node *v, int l , int r , int q_l , int q_r , ll val)
+inline void push(int node , int low , int high)
 {
-    if(l > r || q_r < l || q_l > r) return ;
-    if(q_l <= l && r <= q_r)
+    if(T[node].lazy < 0) return ;
+
+    if(T[node].left==0)  T[node].left = ++ptr ;
+    if(T[node].right==0) T[node].right = ++ptr ;
+
+    int mid = (low+high)>>1 ;
+
+    T[T[node].left].sum = (T[node].lazy*(mid-low+1)) ;
+    T[T[node].left].lazy = T[node].lazy ;
+
+    T[T[node].right].sum = (T[node].lazy*(high-mid)) ;
+    T[T[node].right].lazy = T[node].lazy ;
+
+    T[node].lazy = -1 ;
+}
+
+void update(int node , int low , int high , int l , int r , int val)
+{
+    if(l>r) return ;
+    if((high<l) || (low>r)) return ;
+    if((l<=low) && (high<=r))
     {
-        v -> sum += val ;
+        T[node].sum = ((high-low+1)*val) ;
+        T[node].lazy = val ;
         return ;
     }
+    push(node,low,high) ;
 
-    int mid = (l+r)>>1 ;
+    int mid = (low+high)>>1 ;
 
-    if(v -> l == NULL) v -> l = new Node() ;
-    if(v -> r == NULL) v -> r = new Node() ;
+    if(T[node].left == 0) T[node].left = ++ptr ;
+    if(T[node].right == 0) T[node].right = ++ptr ;
 
-    add(v -> l , l , mid , q_l , q_r , val) ;
-    add(v -> r , r , mid + 1 , r , q_l , q_r , val) ;
+    update(T[node].left , low , mid , l , r , val) ;
+    update(T[node].right , mid + 1 , high , l , r , val) ;
+
+    T[node].sum = T[T[node].left].sum + T[T[node].right].sum ;
 }
-
-ll get(Node *v , int l , int r , int pos)
-{
-    if(!v || l > r || pos < l || pos > r) return 0 ;
-    if(l==r) return v -> sum ;
-    int mid = (l+r)>>1 ;
-    return v -> sum + get(v -> l , l , mid , pos) + get(v -> r , mid + 1 , r , pos) ;
-}
-
-int n , m , t , x , y , val ;
-char c ;
 
 int main()
 {
-    Node *root = new Node() ;
-    scanf("%d ",&n) ;
-    for(int i = 0 ; i < n ; ++i)
+    int n ;
+    scanf("%d",&n) ;
+    update(1,1,n,1,n,1) ;
+    int q ;
+    scanf("%d",&q) ;
+    while(q--)
     {
-        scanf("%d",&x) ;
-        add(root,0,n-1,i,i,x) ;
+        int l , r , k ;
+        scanf("%d%d%d",&l,&r,&k) ;
+        if(k==1) update(1,1,n,l,r,0) ;
+        else update(1,1,n,l,r,1) ;
+        printf("%d\n",T[1].sum) ;
     }
-    //now just pass root everywhere instead of 1.. It will work in the same way..
-    //we are just creating nodes only when we are receiving them..
-    //so it won't take too much time...
-    //we can also use coordinate compression
-    //but it will be O(log(n)*log(n)) which may be slower..
+    return 0 ;
 }

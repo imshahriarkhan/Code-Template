@@ -1,0 +1,73 @@
+//CSES1197: Cycle Finding: https://cses.fi/problemset/task/1197
+
+#include<bits/stdc++.h>
+using namespace std ;
+
+const long long INF = 1e18 + 5 ;
+
+const int MX = 2505 ;
+
+long long d[MX] , p[MX] ;
+
+struct edge
+{
+    int u , v ;
+    long long w ;
+};
+
+vector<edge> edges ;
+
+int main()
+{
+    for(int i = 0 ; i < MX ; ++i)
+    {
+        d[i] = INF , p[i] = -1 ;
+    }
+    int n , m ;
+    scanf("%d%d",&n,&m) ;
+    for(int i = 1 ; i <= m ; ++i)
+    {
+        int a , b ;
+        long long c ;
+        scanf("%d%d%lld",&a,&b,&c) ;
+        edges.push_back({a,b,c}) ;
+    }
+    int x ;
+    for(int i = 1 ; i <= n ; ++i)
+    {
+        x = -1 ;
+        for(edge e : edges)
+        {
+            if((d[e.u]+e.w)<d[e.v])
+            {
+                d[e.v] = max(-INF,d[e.u] + e.w) ;
+                p[e.v] = e.u ;
+                x = e.v ;
+            }
+        }
+    }
+    if(x<0)
+    {
+        puts("NO") ;
+        return 0 ;
+    }
+    int y = x , old ;
+    for(int i = 1 ; i <= n ; ++i)
+    {
+        y = p[y] ;
+    }
+    old = y ;
+    vector<int> ans ;
+    while(1)
+    {
+        ans.push_back(y) ;
+        y = p[y] ;
+        if(old==y) break ;
+    }
+    puts("YES") ;
+    reverse(ans.begin(),ans.end()) ;
+    ans.push_back(ans[0]) ;
+    for(int i : ans) printf("%d ",i) ;
+    printf("\n") ;
+    return 0 ;
+}

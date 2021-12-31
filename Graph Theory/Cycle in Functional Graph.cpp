@@ -1,4 +1,4 @@
-CSES1160: Planet Queries II: https://cses.fi/problemset/task/1160/
+//CSES1160: Planet Queries II: https://cses.fi/problemset/task/1160/
 
 #include<bits/stdc++.h>
 using namespace std ;

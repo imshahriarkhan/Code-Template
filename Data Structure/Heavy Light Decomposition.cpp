@@ -42,10 +42,12 @@ struct tree
         int mid = (low+high)>>1 , left = node<<1 , right = left|1 ;
         return (query(left,low,mid,l,r)^query(right,mid+1,high,l,r)) ;
     }
-} T ;
+} ;
 
 struct HLD
 {
+    tree T ;
+
     int N , LG = 25 , timer = 0 , timer2 = 0 ;
 
     vector<vector<int> > up , adj ;

@@ -1,0 +1,120 @@
+//Problem Name : Magic Numbers
+//Link : https://codeforces.com/contest/628/problem/D
+
+#include<bits/stdc++.h>
+using namespace std ;
+
+const long long mod = 1e9 + 7 , MX = 2005 ;
+
+long long pw[MX] , m , d , dp[MX][2][2][MX] , siz ;
+
+long long rec(string &a , long long pos , long long place , long long f , long long md)
+{
+    if(pos<0) return (!md) ;
+    if(dp[pos][place][f][md]>=0) return dp[pos][place][f][md] ;
+    long long cmx = 9 , cur_a = a[pos]-'0' , ret = 0 ;
+    if(!f) cmx = cur_a ;
+    if(place)
+    {
+        if(cmx>=d)
+        {
+            long long cur_md = (md+((pw[pos]*d)%m))%m ;
+            if(d<cur_a) ret = (ret + rec(a,pos-1,place^1,1,cur_md))%mod ;
+            else ret = (ret + rec(a,pos-1,place^1,f,cur_md))%mod ;
+        }
+    }
+    else
+    {
+        for(long long i = 0 ; i <= cmx ; ++i)
+        {
+            if(i==d) continue ;
+            long long cur_md = (md+((pw[pos]*i)%m))%m ;
+            if(i<cur_a) ret = (ret + rec(a,pos-1,place^1,1,cur_md))%mod ;
+            else ret = (ret + rec(a,pos-1,place^1,f,cur_md))%mod ;
+        }
+    }
+    return dp[pos][place][f][md] = ret ;
+}
+
+int main()
+{
+    scanf("%lld%lld",&m,&d) ;
+    pw[0] = 1 ;
+    for(int i = 1 ; i < MX ; ++i)
+    {
+        pw[i] = (pw[i-1]*10LL)%m ;
+    }
+    string a , b ;
+    cin>>a>>b ;
+    siz = a.size() ;
+    reverse(a.begin(),a.end()) ;
+    reverse(b.begin(),b.end()) ;
+    for(int i = 0 ; i < MX ; ++i)
+    {
+        for(int j = 0 ; j < 2 ; ++j)
+        {
+            for(int k = 0 ; k < 2 ; ++k)
+            {
+                for(int l = 0 ; l < MX ; ++l)
+                {
+                    dp[i][j][k][l] = -1 ;
+                }
+            }
+        }
+    }
+    long long r = 0 , b_lst = b[siz-1]-'0' ;
+    for(long long i = 1 ; i <= b_lst ; ++i)
+    {
+        if(i==d) continue ;
+        if(i<b_lst) r = (r + rec(b,siz-2,1,1,(i*pw[siz-1])%m))%mod ;
+        else r = (r + rec(b,siz-2,1,0,(i*pw[siz-1])%m))%mod ;
+    }
+
+    for(int i = 0 ; i < MX ; ++i)
+    {
+        for(int j = 0 ; j < 2 ; ++j)
+        {
+            for(int k = 0 ; k < 2 ; ++k)
+            {
+                for(int l = 0 ; l < MX ; ++l)
+                {
+                    dp[i][j][k][l] = -1 ;
+                }
+            }
+        }
+    }
+    long long l = 0 , good = 1 , a_lst = a[siz-1] - '0' , rem = 0 ;
+    for(int i = 1 ; i <= a_lst ; ++i)
+    {
+        if(i==d) continue ;
+        if(i<a_lst) l = (l + rec(a,siz-2,1,1,(i*pw[siz-1])%m))%mod ;
+        else l = (l + rec(a,siz-2,1,0,(i*pw[siz-1])%m))%mod ;
+    }
+
+    for(int i = siz - 2 ; i >= 0 ; i -= 2)
+    {
+        int cur_a = a[i] - '0' ;
+        if(cur_a!=d)
+        {
+            good = 0 ;
+            break ;
+        }
+    }
+    for(int i = siz - 1 ; i >= 0 ; i -= 2)
+    {
+        int cur_a = a[i] - '0' ;
+        if(cur_a==d)
+        {
+            good = 0 ;
+            break ;
+        }
+    }
+    for(int i = siz - 1 ; i >= 0 ; --i)
+    {
+        long long dig = a[i] - '0' ;
+        rem = (rem + (dig*pw[i])%m)%m ;
+    }
+    if(rem) good = 0 ;
+    printf("%lld\n",(r-l+good+mod)%mod) ;
+    return 0 ;
+}

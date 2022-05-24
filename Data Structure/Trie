@@ -1,31 +1,152 @@
+//Problem Name : Selling RNA Strands
+//Problem Link : https://oj.uz/problem/view/JOI16_selling_rna
+
 #include<bits/stdc++.h>
 using namespace std ;
 
-//for finding a string just maintain an end array
+const int MX = 4e6 + 5 ;
 
-const int maxN = 5e5 + 5 ;
+vector<int> qc[MX] ;
 
-int nex[maxN][27] , sz ;
+int num[27] , ans[MX] ;
 
-void insert_string(string &s)
+pair<int,int> Q[MX] ;
+
+struct BIT
 {
-    int v = 0 , siz = s.size() ;;
-    for(int i = 0 ; i < siz ; ++i)
+    int N = 0 ;
+    vector<int> t ;
+    void init(int n)
     {
-        int c = s[i]-'a' ;
-        if(!nex[v][c]) nex[v][c] = ++sz ;
-        v = nex[v][c] ;
+        N = n ;
+        t = vector<int> (n+2,0) ;
     }
-}
+    void update(int idx , int val)
+    {
+        for(int i = idx ; i <= N ; i += (i&(-i)))
+        {
+            t[i] += val ;
+        }
+    }
+    int _query(int idx)
+    {
+        int ret = 0 ;
+        for(int i = idx ; i >= 1 ; i -= (i&(-i)))
+        {
+            ret += t[i] ;
+        }
+        return ret ;
+    }
+    int query(int l , int r)
+    {
+        return _query(r)-_query(l-1) ;
+    }
+};
 
-bool search_prefix(string &tmp)
+struct trie
 {
-    int v = 0 , siz = tmp.size() ;
-    for(int i = 0 ; i < siz ; ++i)
+    vector<int> vals[MX] ;
+    int cur = 0 , nex[MX][5] , ed[MX] , tin[MX] , tout[MX] , timer = 0 ;
+    BIT B ;
+    void init()
     {
-        int c = tmp[i]-'a' ;
-        if(!nex[v][c]) return false ;
-        v = nex[v][c] ;
+        for(int i = 0 ; i < MX ; ++i)
+        {
+            ed[i] = 0 , tin[i] = 0 , tout[i] = 0 ;
+            for(int j = 0 ; j < 5 ; ++j)
+            {
+                nex[i][j] = 0 ;
+            }
+        }
+        B.init(MX) ;
     }
-    return true ;
+    void add_string(int idx , string &s)
+    {
+        int siz = s.size() , v = 0 ;
+        for(int i = 0 ; i < siz ; ++i)
+        {
+            int ts = num[s[i]-'A'] ;
+            if(!nex[v][ts]) nex[v][ts] = ++cur ;
+            v = nex[v][ts] , vals[v].push_back(idx) ;
+        }
+        ed[idx] = v ;
+    }
+    int find_string(string &p)
+    {
+        int siz = p.size() , v = 0 ;
+        for(int i = 0 ; i < siz ; ++i)
+        {
+            int ts = num[p[i]-'A'] ;
+            if(!nex[v][ts]) return -1 ;
+            v = nex[v][ts] ;
+        }
+        return v ;
+    }
+    void traverse(int s)
+    {
+        tin[s] = ++timer ;
+        for(int i = 0 ; i < 4 ; ++i)
+        {
+            if(!nex[s][i]) continue ;
+            traverse(nex[s][i]) ;
+        }
+        tout[s] = ++timer ;
+    }
+    void add_num(int idx , int val)
+    {
+        B.update(tin[ed[idx]],val) ;
+    }
+    int query(int idx)
+    {
+        return B.query(tin[idx],tout[idx]) ;
+    }
+};
+
+int main()
+{
+    num['A'-'A'] = 0 , num['G'-'A'] = 1 , num['C'-'A'] = 2 , num['U'-'A'] = 3 ;
+    int n , m ;
+    scanf("%d%d",&n,&m) ;
+    trie pref , suf ;
+    pref.init() , suf.init() ;
+    for(int i = 1 ; i <= n ; ++i)
+    {
+        string s ;
+        cin>>s ;
+        pref.add_string(i,s) ;
+        reverse(s.begin(),s.end()) ;
+        suf.add_string(i,s) ;
+    }
+    suf.traverse(0) ;
+    for(int i = 1 ; i <= m ; ++i)
+    {
+        string p , q ;
+        cin>>p>>q ;
+        reverse(q.begin(),q.end()) ;
+        int pr = pref.find_string(p) , sf = suf.find_string(q) ;
+        if(pr<0) continue ;
+        if(sf<0) continue ;
+        qc[pr].push_back(i) ;
+        Q[i] = {pr,sf} ;
+    }
+    for(int i = 0 ; i < MX ; ++i)
+    {
+        for(int j : pref.vals[i])
+        {
+            suf.add_num(j,1) ;
+        }
+        for(int j : qc[i])
+        {
+            ans[j] += suf.query(Q[j].second) ;
+        }
+        for(int j : pref.vals[i])
+        {
+            suf.add_num(j,-1) ;
+        }
+    }
+    for(int i = 1 ; i <= m ; ++i)
+    {
+        printf("%d\n",ans[i]) ;
+    }
+    return 0 ;
 }
